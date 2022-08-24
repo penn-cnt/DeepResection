@@ -27,3 +27,4 @@ if __name__ == "__main__":
     pat_id = sys.argv[1]
     PRE2POST = sys.argv[2]
     OUT_DIR = sys.argv[3]
+    register_atlas_to_preop(pat_id, PRE2POST, OUT_DIR)

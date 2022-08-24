@@ -13,15 +13,6 @@ postop_file=${3}
 output_dir=${4}
 preop_onlyfile="$(basename $preop_file)"
 
-while true; do
-    read -p "Is the entire resection continuous? [y/n]" yn
-    case $yn in
-        [Yy]* ) is_continuous=1; break;;
-        [Nn]* ) is_continuous=0; break;;
-        * ) echo "Please answer yes or no.";;
-    esac
-done
-
 # create output directory
 mkdir ${output_dir}
 
@@ -31,13 +22,18 @@ python3 ./scripts/pre2post.py ${patient_id} ${preop_file} ${postop_file} ${outpu
 # register DKL atlas to preoperative image
 python3 ./scripts/register_atlas_to_preop.py ${patient_id} ${output_dir}/pre2post_${preop_onlyfile} ${output_dir}
 
-mask_name="${patient_id}_predicted_mask.nii.gz"
+# generate predicted mask files in each dimension for the post-operative image
+python3 ./scripts/generate_masks.py ${postop_file} ${output_dir}
 
-# generate a predicted mask NIFTI file for the post-operative image
-python3 ./scripts/generate_mask.py ${postop_file} ${output_dir} ${mask_name} ${is_continuous}
+axial_mask="${output_dir}/predicted_mask_axial.nii.gz"
+coronal_mask="${output_dir}/predicted_mask_coronal.nii.gz"
+sagittal_mask="${output_dir}/predicted_mask_sagittal.nii.gz"
+
+# generate final predicted mask files for the post-operative image based on 2 majority votes
+python3 ./scripts/majority_vote.py ${postop_file} ${axial_mask} ${coronal_mask} ${sagittal_mask} ${output_dir}
 
 # generate a txt file that calculates the resection volume and percent remaining by brain region
-mask_file="${output_dir}/${mask_name}"
+mask_file="${output_dir}/predicted_mask.nii.gz"
 atlas_file="${output_dir}/${patient_id}_DKT_DL.nii.gz"
 atlas_mappings="atlas/dkt_atlas_mappings.txt"
 

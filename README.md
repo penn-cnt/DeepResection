@@ -1,6 +1,6 @@
 # DeepResection #
 
-Deep Learning-Based Automated Segmentation of Resection Cavities on Postsurgical Epilepsy MRI
+[Deep Learning-Based Automated Segmentation of Resection Cavities on Postsurgical Epilepsy MRI](https://www.sciencedirect.com/science/article/pii/S2213158222002194)
 
 T. Campbell Arnold*, Ramya Muthukrishnan*, Akash R. Pattnaik, Adam Gibson, Nishant Sinha, Sandhitsu R. Das, Brian Litt, Dario J, Englot, Victoria L. Morgan, Kathryn A. Davis, Joel M. Stein
 
@@ -22,9 +22,13 @@ Deep learning code for neurosurgery resection zone segmentation on T1 MRI, imple
 
 ## Getting Started ##
 
-Clone the repo: `git clone https://github.com/tcama/DeepResection.git`
+Clone the repo: `git clone https://github.com/penn-cnt/DeepResection.git`.
+
+Enter the `DeepResection` directory. Make a `model` directory within the repo using the command `mkdir model`. Then, download the 3 model weights at [this link](https://drive.google.com/drive/folders/1tj8T_aHpeM-4XuQys-CSy3brskkGMf2F?usp=sharing) and save them in the `model` directory as `model/model_axial.h5`, `model/model_coronal.h5`, and `model/model_sagittal.h5`.
 
 ## Running the Pipeline ##
+
+First, please ensure that all input images are in LAS orientation, otherwise resection predictions are likely to be inaccurate.
 
 Run segmentation only:
 
@@ -42,7 +46,7 @@ Run pipeline with deformable registration:
 
 ### Predicted mask ###
 
-After running the pipeline, the predicted mask should be a NIfTI file ending with `predicted_mask.nii` in the specified output directory. It can then be opened in an image viewer, such as ITK-Snap, alongside the postoperative input.
+After running the pipeline, the predicted masks in each dimension should be named `predicted_mask_axial.nii.gz`, `predicted_mask_coronal.nii.gz`, and `predicted_mask_sagittal.nii.gz` in the specified output directory. The final predicted mask using majority voting (with 2 votes) is named `predicted_mask.nii.gz` in the output directory. All 4 masks can be opened in an image viewer, such as ITK-Snap, alongside the postoperative input.
 
 <img src='images/sample_predicted_mask.png' align="center" width=700>
 

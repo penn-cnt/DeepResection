@@ -11,16 +11,12 @@ patient_id=${1}
 postop_file=${2}
 output_dir=${3}
 
-while true; do
-    read -p "Is the entire resection continuous? [y/n]" yn
-    case $yn in
-        [Yy]* ) is_continuous=1; break;;
-        [Nn]* ) is_continuous=0; break;;
-        * ) echo "Please answer yes or no.";;
-    esac
-done
+# generate predicted mask files in each dimension for the post-operative image
+python3 ./scripts/generate_masks.py ${postop_file} ${output_dir}
 
-mask_name="${patient_id}_predicted_mask.nii.gz"
+axial_mask="${output_dir}/predicted_mask_axial.nii.gz"
+coronal_mask="${output_dir}/predicted_mask_coronal.nii.gz"
+sagittal_mask="${output_dir}/predicted_mask_sagittal.nii.gz"
 
-# generate a predicted mask NIFTI file for the post-operative image
-python3 ./scripts/generate_mask.py ${postop_file} ${output_dir} ${mask_name} ${is_continuous}
+# generate final predicted mask files for the post-operative image based on 2 majority votes
+python3 ./scripts/majority_vote.py ${postop_file} ${axial_mask} ${coronal_mask} ${sagittal_mask} ${output_dir}
