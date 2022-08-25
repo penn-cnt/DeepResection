@@ -17,5 +17,8 @@ scipy==1.4.1
 jinja2
 pdfkit==0.6.1
 xlrd
-antspyx==0.2.9
-antspynet==0.1.3
+antspyx<=0.2.9
+antspynet<=0.1.3
+opencv-python
+segmentation_models
+
